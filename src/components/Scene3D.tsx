@@ -276,11 +276,12 @@ function SceneContent({ scrollIndex, hasEntered }: Scene3DProps) {
 export default function Scene3D({ scrollIndex, hasEntered }: Scene3DProps) {
   return (
     <div
-  className="w-full h-full fixed inset-0 -z-10 pointer-events-none"
+  className="w-full h-full fixed inset-0 -z-10"
   style={{
-    touchAction: "pan-y", // ✅ biar scroll gesture bisa lewat
-    WebkitTouchCallout: "none",
-    WebkitUserSelect: "none",
+    pointerEvents: "none", // tetap non-interaktif
+    touchAction: "pan-y", // biar scroll bisa
+    WebkitOverflowScrolling: "touch", // ⚡ smooth scroll di iOS
+    overscrollBehavior: "none", // cegah glitch scroll
   }}
 >
 

@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from "react";
-
 interface Particle {
   x: number;
   y: number;
@@ -90,8 +89,8 @@ export default function ParticleBurst() {
 
   return (
     <canvas
-      ref={canvasRef}
-      className="fixed inset-0 z-40 pointer-events-none"
-    />
+  ref={canvasRef}
+  className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none"
+/>
   );
 }

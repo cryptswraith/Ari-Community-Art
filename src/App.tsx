@@ -38,7 +38,7 @@ export default function App() {
 
     const handleScroll = () => {
       if (!hasEntered) return;
-      const viewH = el.clientHeight; // ✅ works better on mobile than window.innerHeight
+      const viewH = el.clientHeight;
       const index = Math.round(el.scrollTop / viewH);
       setScrollIndex(index);
       const progress = el.scrollTop / (viewH * (featuredArt.length + 1));
@@ -87,9 +87,10 @@ export default function App() {
       ref={scrollRef}
       className={`w-full h-screen snap-y snap-mandatory scroll-smooth bg-black text-white transition-all duration-500 
         ${hasEntered ? "overflow-y-scroll" : "overflow-hidden"} 
-        touch-none overscroll-contain`}
+        touch-auto overscroll-contain`}
       style={{
         WebkitOverflowScrolling: "touch",
+        overscrollBehaviorY: "none",
       }}
     >
       {/* === 3D Scene === */}

@@ -25,9 +25,13 @@ export default function GalleryScrollFinal() {
 
   return (
     <div
-      ref={scrollRef}
-      className="w-full h-screen overflow-y-scroll snap-y snap-mandatory scroll-smooth bg-black text-white"
-    >
+  ref={scrollRef}
+  className="w-full h-dvh overflow-y-auto snap-y snap-mandatory scroll-smooth bg-black text-white touch-pan-y"
+  style={{
+    WebkitOverflowScrolling: "touch",
+    overscrollBehavior: "contain",
+  }}
+>
       {/* Featured Art 1-3 */}
       {artworks.slice(0, 3).map((art: Artwork, i: number) => (
         <section

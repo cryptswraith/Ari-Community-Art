@@ -70,7 +70,11 @@ export default function ArtCard({ art }: ArtCardProps) {
         {isOpen && (
           <motion.div
             key="overlay"
-            className="fixed inset-0 bg-black/95 backdrop-blur-md flex items-center justify-center z-[100] px-3 sm:px-6 overflow-y-auto touch-none"
+            className="fixed inset-0 bg-black/95 backdrop-blur-md flex items-center justify-center z-[100] px-3 sm:px-6 overflow-y-auto"
+            style={{
+              touchAction: "pan-y", // ✅ allow scroll on mobile
+              WebkitOverflowScrolling: "touch", // ✅ smooth scroll iOS
+            }}
             onClick={handleOverlayClick}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
