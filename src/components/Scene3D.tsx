@@ -276,9 +276,14 @@ function SceneContent({ scrollIndex, hasEntered }: Scene3DProps) {
 export default function Scene3D({ scrollIndex, hasEntered }: Scene3DProps) {
   return (
     <div
-      className="w-full h-full fixed inset-0 -z-10 pointer-events-none"
-      style={{ touchAction: "none" }}
-    >
+  className="w-full h-full fixed inset-0 -z-10 pointer-events-none"
+  style={{
+    touchAction: "pan-y", // ✅ biar scroll gesture bisa lewat
+    WebkitTouchCallout: "none",
+    WebkitUserSelect: "none",
+  }}
+>
+
       <Canvas
         gl={{
           antialias: false,

@@ -7,15 +7,15 @@ import { motion, useAnimation } from "framer-motion";
 import type { Artwork } from "./types/artwork";
 
 const featuredArt: Artwork[] = [
-  { id: 101, url: "/featured/art1.jpg", title: "Dual Essence of Arichain ", description: "The duality, Strength, and Unity within its ecosystem", alt: "haunting artwork", artist: "Cryptswraith", reason: "Reflection on the symbiosis between the seen and unseen forces of community, where every spark of creativity is supported by a shared foundation of vision, trust, and collective strength" },
-  { id: 102, url: "/featured/art2.jpg", title: "Bushido The Samurai", description: "samurai's philosophy of life, with loyalty as one of core pillars", alt: "spirits artwork", artist: "DianHeto", reason: "Expresses a way of life that guided every aspect of a samurai's existence, with loyalty being one of its main pillars" },
-  { id: 103, url: "/featured/art3.jpg", title: "The Vanguard of Arichain", description: "symbol of courage and strength", alt: "Red ant General", artist: "praszzz", reason: "A reminder that true strength lies in conviction, and true courage in purpose" },
+  { id: 101, url: "/featured/art1.jpg", title: "Echoes of the Forgotten", description: "A haunting reflection of the fading digital souls.", alt: "haunting digital artwork", artist: "Psyche", reason: "Created to represent how forgotten memories linger in the digital realm." },
+  { id: 102, url: "/featured/art2.jpg", title: "Synthetic Dreams", description: "Neon spirits trapped in synthetic light.", alt: "neon spirits artwork", artist: "Psyche", reason: "Expresses the tension between AI-generated worlds and human imagination." },
+  { id: 103, url: "/featured/art3.jpg", title: "Fragments of Arichain", description: "When the blockchain remembers what humanity forgets.", alt: "blockchain fragments", artist: "Psyche", reason: "Shows the interplay of memory and data permanence on Arichain." },
 ];
 
 const communityArts: Artwork[] = [
-  { id: 201, url: "/community/art1.jpg", title: "The voyager", description: "Embodies the courage of Arichain to explore the vast ocean of the blockchain world", alt: "symbol of prosperity and expansion" },
-  { id: 202, url: "/community/art2.jpg", title: "The Rhythm", description: "transforms technology into sound, connection into movement, and community into celebration portraying a world where every beat echoes the unstoppable spirit of creation", alt: "the creative heartbeat of the Arichain community" },
-  { id: 203, url: "/community/art3.jpg", title: "Ari Ninjas", description: "the courage of Arichain to explore the vast skies of possibility — where data, creativity, and community converge into an ecosystem of prosperity", alt: "the essence of courage, the will to rise, explore, and redefine the digital frontier" },
+  { id: 201, url: "/community/art1.jpg", title: "Vault Entrance", description: "A mysterious gateway.", alt: "vault artwork" },
+  { id: 202, url: "/community/art2.jpg", title: "Digital Frame", description: "Neon memories framed.", alt: "digital frame" },
+  { id: 203, url: "/community/art3.jpg", title: "Neon Grid", description: "Networked light.", alt: "neon grid" },
 ];
 
 export default function App() {
@@ -86,35 +86,30 @@ export default function App() {
   return (
   <div
     ref={scrollRef}
-    className={`w-full h-screen snap-y snap-mandatory scroll-smooth bg-black text-white transition-all duration-500 ${
-      hasEntered ? "overflow-y-auto md:overflow-y-scroll" : "overflow-hidden"
-    }`}
+    className={`w-full h-screen snap-y snap-mandatory scroll-smooth bg-black text-white transition-all duration-500 
+      ${hasEntered ? "overflow-y-scroll" : "overflow-hidden"}`}
     style={{
       WebkitOverflowScrolling: "touch",
       overscrollBehaviorY: "contain",
       touchAction: "pan-y",
+      height: "100dvh", // ✅ fix viewport jump in mobile Chrome
+    }}
+    onTouchMove={(e) => {
+      if (!hasEntered) return;
+      e.stopPropagation();
     }}
   >
-    {/* === FIXED 3D Scene === */}
-    <div
-      className="fixed inset-0 -z-10"
-      style={{
-        pointerEvents: "none",
-        touchAction: "none",
-        width: "100%",
-        height: "100%",
-      }}
-    >
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: hasEntered ? fadeScene : 0 }}
-        transition={{ duration: 2 }}
-        className="absolute inset-0"
-      >
-        <Scene3D scrollIndex={scrollIndex} hasEntered={hasEntered} />
-      </motion.div>
-    </div>
-
+      {/* === 3D Scene === */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: hasEntered ? fadeScene : 0 }}
+          transition={{ duration: 2 }}
+          className="absolute inset-0"
+        >
+          <Scene3D scrollIndex={scrollIndex} hasEntered={hasEntered} />
+        </motion.div>
+      </div>
 
       {/* === Bloody Overlay === */}
       {transitioning && (
@@ -206,7 +201,7 @@ export default function App() {
       )}
 
       {/* === Hero Section === */}
-      <section className="snap-start min-h-screen flex items-center justify-center relative z-10 touch-auto">
+      <section className="snap-start h-screen flex items-center justify-center relative z-10">
         <motion.div
           initial={{ opacity: 1 }}
           animate={{ opacity: hasEntered || transitioning ? 0 : 1 }}
