@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/components/artcard.tsx","./src/components/artparticles.tsx","./src/components/galleryscroll.tsx","./src/components/herocarousel.tsx","./src/components/herosection.tsx","./src/components/particlesburst.tsx","./src/components/scene3d.tsx","./src/scenes/galleryscene.tsx","./src/types/artwork.ts"],"version":"5.9.3"}

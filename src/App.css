@@ -66,3 +66,18 @@
 .animate-glitch { animation: glitch 0.4s infinite; }
 .animate-glitchTop { animation: glitchTop 0.35s infinite; }
 .animate-glitchBottom { animation: glitchBottom 0.4s infinite; }
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  background-color: black;
+}

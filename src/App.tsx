@@ -84,26 +84,37 @@ export default function App() {
   };
 
   return (
+  <div
+    ref={scrollRef}
+    className={`w-full h-screen snap-y snap-mandatory scroll-smooth bg-black text-white transition-all duration-500 ${
+      hasEntered ? "overflow-y-auto md:overflow-y-scroll" : "overflow-hidden"
+    }`}
+    style={{
+      WebkitOverflowScrolling: "touch",
+      overscrollBehaviorY: "contain",
+      touchAction: "pan-y",
+    }}
+  >
+    {/* === FIXED 3D Scene === */}
     <div
-      ref={scrollRef}
-      className={`w-full h-screen snap-y snap-mandatory scroll-smooth bg-black text-white transition-all duration-500 
-        ${hasEntered ? "overflow-y-scroll" : "overflow-hidden"} 
-        touch-none overscroll-contain`}
+      className="fixed inset-0 -z-10"
       style={{
-        WebkitOverflowScrolling: "touch",
+        pointerEvents: "none",
+        touchAction: "none",
+        width: "100%",
+        height: "100%",
       }}
     >
-      {/* === 3D Scene === */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: hasEntered ? fadeScene : 0 }}
-          transition={{ duration: 2 }}
-          className="absolute inset-0"
-        >
-          <Scene3D scrollIndex={scrollIndex} hasEntered={hasEntered} />
-        </motion.div>
-      </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: hasEntered ? fadeScene : 0 }}
+        transition={{ duration: 2 }}
+        className="absolute inset-0"
+      >
+        <Scene3D scrollIndex={scrollIndex} hasEntered={hasEntered} />
+      </motion.div>
+    </div>
+
 
       {/* === Bloody Overlay === */}
       {transitioning && (
@@ -195,7 +206,7 @@ export default function App() {
       )}
 
       {/* === Hero Section === */}
-      <section className="snap-start h-screen flex items-center justify-center relative z-10">
+      <section className="snap-start min-h-screen flex items-center justify-center relative z-10 touch-auto">
         <motion.div
           initial={{ opacity: 1 }}
           animate={{ opacity: hasEntered || transitioning ? 0 : 1 }}

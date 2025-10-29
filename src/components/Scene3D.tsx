@@ -275,16 +275,24 @@ function SceneContent({ scrollIndex, hasEntered }: Scene3DProps) {
 
 export default function Scene3D({ scrollIndex, hasEntered }: Scene3DProps) {
   return (
-    <div className="w-full h-full absolute inset-0 pointer-events-none">
+    <div
+      className="w-full h-full fixed inset-0 -z-10 pointer-events-none"
+      style={{ touchAction: "none" }}
+    >
       <Canvas
-        gl={{ antialias: true }}
-        camera={{ position: [0, 0, 25], fov: IS_MOBILE ? 65 : 60 }}
-        dpr={Math.min(window.devicePixelRatio, IS_MOBILE ? 1.5 : 2)}
+        gl={{
+          antialias: false,
+          powerPreference: "low-power",
+          alpha: true,
+        }}
+        dpr={[1, 1.5]}
+        camera={{ position: [0, 0, 25], fov: 60 }}
       >
         <SceneContent scrollIndex={scrollIndex} hasEntered={hasEntered} />
       </Canvas>
     </div>
   );
 }
+
 
 useGLTF.preload("/models/Abstract_Symmetry_1028095503_generate.glb");
