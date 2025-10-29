@@ -1,7 +1,7 @@
 // src/components/HeroSection.tsx
 import React, { useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-import "@fontsource/cinzel-decorative"; // optional, ensure package installed
+import "@fontsource/cinzel-decorative";
 
 interface HeroSectionProps {
   onEnter: () => void;
@@ -21,26 +21,24 @@ export default function HeroSection({ onEnter, isVisible }: HeroSectionProps) {
     let mounted = true;
     let animationFrame = 0;
 
-    const DPR = Math.min(window.devicePixelRatio || 1, 2); // cap DPR to protect mobile GPU
+    const DPR = Math.min(window.devicePixelRatio || 1, 2);
     const resize = () => {
       if (!canvas) return;
-      // use CSS-size in layout units; multiply physical px by DPR for backing store
       const w = Math.max(320, window.innerWidth);
       const h = Math.max(320, window.innerHeight);
       canvas.style.width = `${w}px`;
       canvas.style.height = `${h}px`;
       canvas.width = Math.round(w * DPR);
       canvas.height = Math.round(h * DPR);
-      ctx.setTransform(DPR, 0, 0, DPR, 0, 0); // reset transform and scale for DPR
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     };
 
     resize();
     window.addEventListener("resize", resize);
 
     const img = new Image();
-    img.src = "/logo-arichain.png"; // transparent white logo recommended
+    img.src = "/logo-arichain.png";
 
-    // adapt number & size to screen width for performance
     const isMobile = window.innerWidth < 768;
     const LOGO_COUNT = isMobile ? 12 : 24;
 
@@ -57,8 +55,6 @@ export default function HeroSection({ onEnter, isVisible }: HeroSectionProps) {
 
     let frame = 0;
     let fadeOut = false;
-
-    // simple FPS limiter for mobile to reduce CPU usage
     let lastTick = performance.now();
     const targetFPS = isMobile ? 30 : 60;
     const frameDuration = 1000 / targetFPS;
@@ -74,9 +70,7 @@ export default function HeroSection({ onEnter, isVisible }: HeroSectionProps) {
 
       const width = canvas.width / DPR;
       const height = canvas.height / DPR;
-
       ctx.clearRect(0, 0, width, height);
-      // additive blending gives glow-like effect but keep subtle
       ctx.globalCompositeOperation = "lighter";
 
       logos.forEach((p) => {
@@ -85,13 +79,10 @@ export default function HeroSection({ onEnter, isVisible }: HeroSectionProps) {
         p.tilt += p.rotSpeed;
 
         if (fadeOut) p.alpha *= 0.96;
-        if (p.y > height + 50) {
-          // if still before fadeOut, recycle from top; if fading, let them drain
-          if (!fadeOut) {
-            p.y = -30;
-            p.x = Math.random() * width;
-            p.alpha = 1;
-          }
+        if (p.y > height + 50 && !fadeOut) {
+          p.y = -30;
+          p.x = Math.random() * width;
+          p.alpha = 1;
         }
 
         if (img.complete) {
@@ -100,7 +91,6 @@ export default function HeroSection({ onEnter, isVisible }: HeroSectionProps) {
           ctx.rotate(p.tilt * 0.28);
           ctx.globalAlpha = Math.max(0, Math.min(1, p.alpha));
 
-          // dynamic red-metallic tint (uses small oscillation per frame)
           const t = Math.sin((frame + p.x) * 0.008);
           const r1 = Math.round(130 + t * 40);
           const r2 = Math.round(230 - t * 30);
@@ -112,29 +102,21 @@ export default function HeroSection({ onEnter, isVisible }: HeroSectionProps) {
           gradient.addColorStop(1, `rgba(${r2},${g2},${g2},0.85)`);
           ctx.fillStyle = gradient;
 
-          // draw image and then tint using source-atop so logo shape gets metallic fill
           ctx.globalCompositeOperation = "source-over";
           ctx.drawImage(img, -p.size / 2, -p.size / 2, p.size, p.size);
-
-          // tint using source-atop (keeps logo alpha)
           ctx.globalCompositeOperation = "source-atop";
           ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
 
-          // subtle outer glow using shadow (kept small for mobile)
           ctx.shadowBlur = isMobile ? 8 : 14;
           ctx.shadowColor = "rgba(200,30,30,0.25)";
-
           ctx.restore();
         }
       });
 
       frame++;
-      // after ~7 seconds start fade-out
       if (frame === Math.floor((isMobile ? 30 : 60) * 7)) fadeOut = true;
 
-      // if fading finished completely, stop anim
       if (fadeOut && logos.every((p) => p.alpha < 0.02)) {
-        // final clear to remove ghosting
         ctx.clearRect(0, 0, width, height);
         return;
       }
@@ -142,7 +124,6 @@ export default function HeroSection({ onEnter, isVisible }: HeroSectionProps) {
       animationFrame = requestAnimationFrame(draw);
     };
 
-    // start animation loop
     animationFrame = requestAnimationFrame(draw);
 
     return () => {
@@ -152,20 +133,27 @@ export default function HeroSection({ onEnter, isVisible }: HeroSectionProps) {
     };
   }, [isVisible]);
 
-  // disable page scroll while hero visible (safe undo on unmount)
+  // ✅ FIX: Jangan matikan scroll di mobile
   useEffect(() => {
-    const prev = document.body.style.overflow;
+    const prevOverflow = document.body.style.overflow;
+    const prevTouch = document.documentElement.style.touchAction;
+
     if (isVisible) {
-      document.body.style.overflow = "hidden";
-      // on mobile also prevent overscroll bounce
-      document.documentElement.style.touchAction = "none";
+      if (window.innerWidth >= 768) {
+        document.body.style.overflow = "hidden";
+        document.documentElement.style.touchAction = "none";
+      } else {
+        document.body.style.overflow = "auto";
+        document.documentElement.style.touchAction = "auto";
+      }
     } else {
-      document.body.style.overflow = prev || "auto";
-      document.documentElement.style.touchAction = "";
+      document.body.style.overflow = prevOverflow || "auto";
+      document.documentElement.style.touchAction = prevTouch || "auto";
     }
+
     return () => {
-      document.body.style.overflow = prev || "auto";
-      document.documentElement.style.touchAction = "";
+      document.body.style.overflow = prevOverflow || "auto";
+      document.documentElement.style.touchAction = prevTouch || "auto";
     };
   }, [isVisible]);
 
@@ -176,13 +164,11 @@ export default function HeroSection({ onEnter, isVisible }: HeroSectionProps) {
       animate={{ opacity: isVisible ? 1 : 0 }}
       transition={{ duration: 1.2, ease: "easeInOut" }}
     >
-      {/* Logo rain canvas */}
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full z-0 pointer-events-none mix-blend-screen"
       />
 
-      {/* soft red mist (subtle) */}
       <motion.div
         className="absolute inset-0 z-0 pointer-events-none"
         initial={{ opacity: 0 }}
@@ -194,14 +180,12 @@ export default function HeroSection({ onEnter, isVisible }: HeroSectionProps) {
         }}
       />
 
-      {/* noise shimmer */}
       <motion.div
         className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.04] mix-blend-screen"
         animate={{ opacity: [0.03, 0.07, 0.03] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      {/* Title */}
       <motion.h1
         className="relative font-['Cinzel_Decorative'] text-[clamp(1.75rem,6vw,4.5rem)] font-bold text-[#b30000] text-center leading-tight select-none px-4 z-10"
         initial={{ opacity: 0, scale: 0.92 }}
@@ -224,7 +208,6 @@ export default function HeroSection({ onEnter, isVisible }: HeroSectionProps) {
         Community Art
       </motion.h1>
 
-      {/* Subtext */}
       <motion.p
         className="mt-4 text-gray-300 text-center text-[clamp(0.9rem,2.2vw,1.05rem)] font-light tracking-wide z-10 px-6"
         initial={{ opacity: 0, y: 18 }}
@@ -234,7 +217,6 @@ export default function HeroSection({ onEnter, isVisible }: HeroSectionProps) {
         Where shadows preserve the art of the forgotten.
       </motion.p>
 
-      {/* Enter button */}
       <motion.button
         onClick={onEnter}
         className="relative mt-8 px-6 sm:px-8 py-2 sm:py-3 rounded-full bg-[#8b0000] text-white font-semibold text-base sm:text-lg shadow-[0_0_10px_rgba(77,0,0,0.8)] hover:bg-[#a30000] transition-all duration-300 z-10 overflow-hidden"
