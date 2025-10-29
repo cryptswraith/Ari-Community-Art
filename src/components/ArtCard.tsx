@@ -81,56 +81,60 @@ export default function ArtCard({ art }: ArtCardProps) {
             exit={{ opacity: 0 }}
           >
             <motion.div
-              ref={modalRef}
-              layoutId={`card-${art.id}`}
-              className={`relative w-full max-w-[95vw] sm:max-w-4xl md:max-w-6xl rounded-3xl border border-red-700 bg-black/60 shadow-[0_0_50px_rgba(255,0,0,0.6)] overflow-hidden transition-all duration-300 ${
-                glitchActive ? "glitch-active" : ""
-              }`}
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.85, opacity: 0 }}
-              transition={{ duration: 0.4, ease: "easeInOut" }}
-            >
-              {/* 🖼️ Gambar */}
-              <motion.img
-                src={art.url}
-                alt={art.alt}
-                layoutId={`image-${art.id}`}
-                className={`w-full max-h-[80vh] ${
-                  isPortrait ? "object-contain" : "object-cover"
-                } object-center rounded-t-3xl transition-all duration-300 ${
-                  glitchActive ? "glitch-img" : ""
-                }`}
-                draggable={false}
-              />
+  ref={modalRef}
+  layoutId={`card-${art.id}`}
+  className={`relative w-full max-w-[95vw] sm:max-w-4xl md:max-w-6xl rounded-3xl border border-red-700 bg-black/60 shadow-[0_0_50px_rgba(255,0,0,0.6)] overflow-hidden transition-all duration-300 ${
+    glitchActive ? "glitch-active" : ""
+  }`}
+  initial={{ scale: 0.9, opacity: 0 }}
+  animate={{ scale: 1, opacity: 1 }}
+  exit={{ scale: 0.85, opacity: 0 }}
+  transition={{ duration: 0.4, ease: "easeInOut" }}
+>
+  {/* 🖼️ Wrapper biar gambar fullscreen dan konten bisa scroll */}
+  <div className="relative max-h-[100vh] overflow-y-auto">
+    {/* ❌ Tombol Close — absolute di atas gambar */}
+    <motion.button
+      onClick={() => setIsOpen(false)}
+      className="absolute top-3 right-3 sm:top-4 sm:right-5 text-red-500 hover:text-white text-2xl sm:text-3xl font-bold z-50"
+      whileHover={{ scale: 1.2 }}
+      whileTap={{ scale: 0.9 }}
+    >
+      ✕
+    </motion.button>
 
-              {/* 🌫️ Efek layer */}
-              <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(transparent_60%,rgba(0,0,0,0.7))]" />
-              <div className="absolute inset-0 pointer-events-none opacity-[0.07] mix-blend-overlay grain-layer" />
+    {/* 🖼️ Gambar */}
+    <motion.img
+      src={art.url}
+      alt={art.alt}
+      layoutId={`image-${art.id}`}
+      className={`w-full h-auto max-h-[100vh] ${
+        isPortrait ? "object-contain" : "object-cover"
+      } object-center rounded-t-3xl transition-all duration-300 ${
+        glitchActive ? "glitch-img" : ""
+      }`}
+      draggable={false}
+    />
 
-              {/* 🧠 Info Section */}
-              <div className="p-4 sm:p-6 text-center bg-black/70 border-t border-red-800">
-                <h2 className="text-[clamp(1.25rem,4vw,2rem)] font-bold text-red-500 mb-2 leading-tight">
-                  {art.title}
-                </h2>
-                <p className="text-gray-300 mb-3 text-[clamp(0.9rem,2.6vw,1rem)] leading-relaxed">
-                  {art.description}
-                </p>
-                {art.reason && (
-                  <p className="text-gray-500 text-sm italic">{art.reason}</p>
-                )}
-              </div>
+    {/* 🌫️ Efek layer */}
+    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(transparent_60%,rgba(0,0,0,0.7))]" />
+    <div className="absolute inset-0 pointer-events-none opacity-[0.07] mix-blend-overlay grain-layer" />
 
-              {/* ❌ Tombol Close */}
-              <motion.button
-                onClick={() => setIsOpen(false)}
-                className="absolute top-3 right-3 sm:top-4 sm:right-5 text-red-500 hover:text-white text-2xl sm:text-3xl font-bold"
-                whileHover={{ scale: 1.2 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                ✕
-              </motion.button>
-            </motion.div>
+    {/* 🧠 Info Section */}
+    <div className="p-4 sm:p-6 text-center bg-black/80 border-t border-red-800">
+      <h2 className="text-[clamp(1.25rem,4vw,2rem)] font-bold text-red-500 mb-2 leading-tight">
+        {art.title}
+      </h2>
+      <p className="text-gray-300 mb-3 text-[clamp(0.9rem,2.6vw,1rem)] leading-relaxed">
+        {art.description}
+      </p>
+      {art.reason && (
+        <p className="text-gray-500 text-sm italic">{art.reason}</p>
+      )}
+    </div>
+  </div>
+</motion.div>
+
 
             {/* === CSS Animasi === */}
             <style>{`
